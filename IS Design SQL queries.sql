@@ -1,3 +1,4 @@
+USE tengohambreDB;
 CREATE TABLE User(
 userID INT NOT NULL,
 userName VARCHAR(30) NOT NULL,
@@ -8,7 +9,8 @@ emailID VARCHAR(30) NOT NULL,
 imageURL VARCHAR(300) NOT NULL,
 adminFlag BOOLEAN NOT NULL,
 approvalFlag BOOLEAN NOT NULL,
-creationDate DATE NOT NULL
+creationDate DATE NOT NULL,
+PRIMARY KEY (userID)
 );
 
 
@@ -16,18 +18,22 @@ CREATE TABLE cookInfo(
 userID INT NOT NULL,
 phoneNo CHAR(10),
 address VARCHAR(150),
-description VARCHAR(100)
+description VARCHAR(100),
+PRIMARY KEY (userID),
+FOREIGN KEY (userID) REFERENCES User(userID)
 );
 
 
-CREATE TABLE foodItem(
-foodID INT NOT NULL,
+CREATE TABLE Dish(
+dishID INT NOT NULL,
 userID INT NOT NULL,
-foodName VARCHAR(50) NOT NULL,
+dishName VARCHAR(50) NOT NULL,
 image VARCHAR(300) NOT NULL,
 price DECIMAL(5,2) NOT NULL,
 approvalFlag BOOLEAN NOT NULL,
-creationDate DATE NOT NULL
+creationDate DATE NOT NULL,
+PRIMARY KEY(dishID),
+FOREIGN KEY (userID) REFERENCES cookInfo(userID)
 );
 
 
@@ -39,7 +45,9 @@ recipeIngredients VARCHAR(1000) NOT NULL,
 recipeDirections VARCHAR(1000) NOT NULL,
 image VARCHAR(300) NOT NULL,
 approvalFlag BOOLEAN NOT NULL,
-creationDate DATE NOT NULL
+creationDate DATE NOT NULL,
+PRIMARY KEY (recipeID),
+FOREIGN KEY (userID) REFERENCES User(userID)
 );
 
 
@@ -50,23 +58,33 @@ userID INT NOT NULL,
 recipeID INT NOT NULL,
 rating INT NOT NULL,
 reviewComments VARCHAR(1000) NOT NULL,
-creationDate DATE NOT NULL
+creationDate DATE NOT NULL,
+PRIMARY KEY (reviewID),
+FOREIGN KEY (userID) REFERENCES User(userID),
+FOREIGN KEY (recipeID) REFERENCES Recipes(recipeID)
 );
 
 
 CREATE TABLE Tags(
 tagID INT,
-tagName VARCHAR(50)
+tagName VARCHAR(50),
+PRIMARY KEY Tags(tagID)
 );
 
 
-CREATE TABLE foodTags(
-foodID INT,
-tagID int
+CREATE TABLE dishTags(
+dishID INT,
+tagID int,
+PRIMARY KEY (dishID, tagID),
+FOREIGN KEY (dishID) REFERENCES Dish(dishID),
+FOREIGN KEY (tagID) REFERENCES Tags(tagID)
 );
 
 
 CREATE TABLE recipeTags(
 recipeID INT,
-tagID int
+tagID int,
+PRIMARY KEY (recipeID, tagID),
+FOREIGN KEY (recipeID) REFERENCES Recipes(recipeID),
+FOREIGN KEY (tagID) REFERENCES Tags(tagID)
 );
